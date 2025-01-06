@@ -28,12 +28,13 @@ func (s *Server) Serve() error {
 	itemsRouter := NewItemsRouter(mux, s.db)
 	itemsRouter.InitRoutes()
 
+	loggedMux := NewLogger(mux)
+
 	server := http.Server{
 		Addr:    s.port,
-		Handler: mux,
+		Handler: loggedMux,
 	}
 
 	log.Printf("Server running: http://localhost%s", s.port)
-
 	return server.ListenAndServe()
 }
