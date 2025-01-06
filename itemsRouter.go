@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -17,6 +18,10 @@ type ItemsRouter struct {
 
 func NewItemsRouter(mux *http.ServeMux, db *sql.DB) *ItemsRouter {
 	s := NewItemService(db)
+	err := s.createItemsTable()
+	if err != nil {
+		log.Fatal("Error creating items table:", err)
+	}
 	return &ItemsRouter{mux: mux, s: s}
 }
 

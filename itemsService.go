@@ -13,6 +13,19 @@ func NewItemService(db *sql.DB) *ItemService {
 	return &ItemService{db: db}
 }
 
+func (i *ItemService) createItemsTable() error {
+	query := `
+	CREATE TABLE IF NOT EXISTS items (
+		id SERIAL PRIMARY KEY,
+		name VARCHAR(255) NOT NULL,
+		date TIMESTAMP DEFAULT NOW()
+	)
+	`
+
+	_, err := i.db.Exec(query)
+	return err
+}
+
 func (i *ItemService) createItem(item Item) (Item, error) {
 	query := `
 	INSERT INTO items (name)
