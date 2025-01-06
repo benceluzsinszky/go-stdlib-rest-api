@@ -7,13 +7,13 @@ import (
 )
 
 type APIServer struct {
-	addr string
+	port string
 	db   *sql.DB
 }
 
-func NewAPIServer(addr string, db *sql.DB) *APIServer {
+func NewAPIServer(port string, db *sql.DB) *APIServer {
 	return &APIServer{
-		addr: addr,
+		port: port,
 		db:   db,
 	}
 }
@@ -29,11 +29,11 @@ func (s *APIServer) Serve() error {
 	itemsRouter.InitRoutes()
 
 	server := http.Server{
-		Addr:    s.addr,
+		Addr:    s.port,
 		Handler: mux,
 	}
 
-	log.Printf("Server running: http://localhost%s", s.addr)
+	log.Printf("Server running: http://localhost%s", s.port)
 
 	return server.ListenAndServe()
 }

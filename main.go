@@ -21,7 +21,12 @@ func main() {
 	}
 	defer db.Close()
 
-	server := NewAPIServer(":8080", db)
+	port := ":8080"
+	if len(os.Args) > 1 {
+		port = ":" + os.Args[1]
+	}
+
+	server := NewAPIServer(port, db)
 
 	server.Serve()
 
