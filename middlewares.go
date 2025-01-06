@@ -1,21 +1,20 @@
 package main
 
-import (
-	"log"
-	"net/http"
-)
+import "net/http"
 
-type Logger struct {
-	mux *http.ServeMux
-}
+func authMiddleware(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		header := r.Header.Get("Authorization")
+		if header == "" {
+			http.Error(w, "Authorization header is missing", http.StatusUnauthorized)
+			return
+		}
 
-func NewLogger(mux *http.ServeMux) *Logger {
-	return &Logger{mux: mux}
-}
+		if !(header == "Bearer token") {
+			http.Error(w, "Invalid token", http.StatusUnauthorized)
+			return
+		}
 
-func (l *Logger) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	l.mux.ServeHTTP(w, r)
-	method := r.Method
-	path := r.URL.Path
-	log.Println(method, path)
+		next(w, r)
+	}
 }

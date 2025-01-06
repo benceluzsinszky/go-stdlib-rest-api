@@ -26,11 +26,11 @@ func NewItemsRouter(mux *http.ServeMux, db *sql.DB) *ItemsRouter {
 }
 
 func (router *ItemsRouter) InitRoutes() {
-	router.mux.HandleFunc("POST /items/", router.createItem)
+	router.mux.HandleFunc("POST /items/", authMiddleware(router.createItem))
 	router.mux.HandleFunc("GET /items/", router.getAllItems)
 	router.mux.HandleFunc("GET /items/{id}", router.getItem)
-	router.mux.HandleFunc("PUT /items/{id}", router.updateItem)
-	router.mux.HandleFunc("DELETE /items/{id}", router.deleteItem)
+	router.mux.HandleFunc("PUT /items/{id}", authMiddleware(router.updateItem))
+	router.mux.HandleFunc("DELETE /items/{id}", authMiddleware(router.deleteItem))
 }
 
 func (router *ItemsRouter) createItem(w http.ResponseWriter, r *http.Request) {
