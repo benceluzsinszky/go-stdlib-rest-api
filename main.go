@@ -26,7 +26,7 @@ func main() {
 		port = ":" + os.Args[1]
 	}
 
-	server := NewAPIServer(port, db)
+	server := NewServer(port, db)
 
 	server.Serve()
 

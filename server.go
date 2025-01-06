@@ -6,19 +6,19 @@ import (
 	"net/http"
 )
 
-type APIServer struct {
+type Server struct {
 	port string
 	db   *sql.DB
 }
 
-func NewAPIServer(port string, db *sql.DB) *APIServer {
-	return &APIServer{
+func NewServer(port string, db *sql.DB) *Server {
+	return &Server{
 		port: port,
 		db:   db,
 	}
 }
 
-func (s *APIServer) Serve() error {
+func (s *Server) Serve() error {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
