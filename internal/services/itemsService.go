@@ -1,7 +1,8 @@
-package main
+package services
 
 import (
 	"database/sql"
+	"main/internal/types"
 	"time"
 )
 
@@ -9,11 +10,13 @@ type ItemService struct {
 	db *sql.DB
 }
 
+type Item = types.Item
+
 func NewItemService(db *sql.DB) *ItemService {
 	return &ItemService{db: db}
 }
 
-func (i *ItemService) createItemsTable() error {
+func (i *ItemService) CreateItemsTable() error {
 	query := `
 	CREATE TABLE IF NOT EXISTS items (
 		id SERIAL PRIMARY KEY,
@@ -26,7 +29,7 @@ func (i *ItemService) createItemsTable() error {
 	return err
 }
 
-func (i *ItemService) createItem(item Item) (Item, error) {
+func (i *ItemService) CreateItem(item Item) (Item, error) {
 	query := `
 	INSERT INTO items (name)
 	VALUES ($1)
@@ -43,7 +46,7 @@ func (i *ItemService) createItem(item Item) (Item, error) {
 	return dbItem, nil
 }
 
-func (i *ItemService) getAllItems() ([]Item, error) {
+func (i *ItemService) GetAllItems() ([]Item, error) {
 	query := `
 	SELECT * FROM items
 	`
@@ -73,7 +76,7 @@ func (i *ItemService) getAllItems() ([]Item, error) {
 	return data, nil
 }
 
-func (i *ItemService) getItem(item Item) (Item, error) {
+func (i *ItemService) GetItem(item Item) (Item, error) {
 	query := `
 	SELECT * FROM items WHERE id = $1
 	`
@@ -88,7 +91,7 @@ func (i *ItemService) getItem(item Item) (Item, error) {
 	return dbItem, nil
 }
 
-func (i *ItemService) updateItem(item Item, newItem Item) (Item, error) {
+func (i *ItemService) UpdateItem(item Item, newItem Item) (Item, error) {
 	query := `
 	UPDATE items
 	SET name = $2, date = NOW()
@@ -106,7 +109,7 @@ func (i *ItemService) updateItem(item Item, newItem Item) (Item, error) {
 	return updatedItem, nil
 }
 
-func (i *ItemService) deleteItem(item Item) (Item, error) {
+func (i *ItemService) DeleteItem(item Item) (Item, error) {
 	query := `
 	DELETE FROM items 
 	WHERE id = $1

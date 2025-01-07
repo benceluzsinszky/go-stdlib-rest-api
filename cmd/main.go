@@ -1,6 +1,8 @@
 package main
 
 import (
+	"main/internal/db"
+	"main/internal/server"
 	"os"
 
 	_ "github.com/lib/pq"
@@ -13,10 +15,10 @@ func main() {
 		port = ":" + os.Args[1]
 	}
 
-	db := InitDb()
+	db := db.InitDb()
 	defer db.Close()
 
-	server := NewServer(port, db)
+	server := server.NewServer(port, db)
 	server.Serve()
 
 }

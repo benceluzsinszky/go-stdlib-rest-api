@@ -1,6 +1,8 @@
-package main
+package types
 
-import "time"
+import (
+	"time"
+)
 
 type Item struct {
 	Id   int64     `json:"id"`

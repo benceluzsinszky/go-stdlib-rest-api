@@ -1,9 +1,12 @@
-package main
+package routers
 
 import (
 	"database/sql"
 	"encoding/json"
 	"log"
+	"main/internal/middlewares"
+	"main/internal/services"
+	"main/internal/types"
 	"net/http"
 	"strconv"
 	"strings"
@@ -13,12 +16,14 @@ import (
 
 type ItemsRouter struct {
 	mux *http.ServeMux
-	s   *ItemService
+	s   *services.ItemService
 }
 
+type Item = types.Item
+
 func NewItemsRouter(mux *http.ServeMux, db *sql.DB) *ItemsRouter {
-	s := NewItemService(db)
-	err := s.createItemsTable()
+	s := services.NewItemService(db)
+	err := s.CreateItemsTable()
 	if err != nil {
 		log.Fatal("Error creating items table:", err)
 	}
@@ -26,11 +31,11 @@ func NewItemsRouter(mux *http.ServeMux, db *sql.DB) *ItemsRouter {
 }
 
 func (router *ItemsRouter) InitRoutes() {
-	router.mux.HandleFunc("POST /items/", authMiddleware(router.createItem))
+	router.mux.HandleFunc("POST /items/", middlewares.AuthMiddleware(router.createItem))
 	router.mux.HandleFunc("GET /items/", router.getAllItems)
 	router.mux.HandleFunc("GET /items/{id}", router.getItem)
-	router.mux.HandleFunc("PUT /items/{id}", authMiddleware(router.updateItem))
-	router.mux.HandleFunc("DELETE /items/{id}", authMiddleware(router.deleteItem))
+	router.mux.HandleFunc("PUT /items/{id}", middlewares.AuthMiddleware(router.updateItem))
+	router.mux.HandleFunc("DELETE /items/{id}", middlewares.AuthMiddleware(router.deleteItem))
 }
 
 func (router *ItemsRouter) createItem(w http.ResponseWriter, r *http.Request) {
@@ -43,7 +48,7 @@ func (router *ItemsRouter) createItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	item, err = router.s.createItem(item)
+	item, err = router.s.CreateItem(item)
 	if err != nil {
 		pqErr, ok := err.(*pq.Error)
 		if ok && pqErr.Code == "23505" {
@@ -64,7 +69,7 @@ func (router *ItemsRouter) createItem(w http.ResponseWriter, r *http.Request) {
 }
 
 func (router *ItemsRouter) getAllItems(w http.ResponseWriter, r *http.Request) {
-	items, err := router.s.getAllItems()
+	items, err := router.s.GetAllItems()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -89,7 +94,7 @@ func (router *ItemsRouter) getItem(w http.ResponseWriter, r *http.Request) {
 
 	item.Id = id
 
-	item, err = router.s.getItem(item)
+	item, err = router.s.GetItem(item)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			http.Error(w, "Item not found", http.StatusNotFound)
@@ -125,7 +130,7 @@ func (router *ItemsRouter) updateItem(w http.ResponseWriter, r *http.Request) {
 
 	item.Id = id
 
-	item, err = router.s.updateItem(item, newItem)
+	item, err = router.s.UpdateItem(item, newItem)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			http.Error(w, "Item not found", http.StatusNotFound)
@@ -155,7 +160,7 @@ func (router *ItemsRouter) deleteItem(w http.ResponseWriter, r *http.Request) {
 
 	item.Id = id
 
-	item, err = router.s.deleteItem(item)
+	item, err = router.s.DeleteItem(item)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			http.Error(w, "Item not found", http.StatusNotFound)

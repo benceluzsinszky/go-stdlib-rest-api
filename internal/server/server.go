@@ -1,8 +1,10 @@
-package main
+package server
 
 import (
 	"database/sql"
 	"log"
+	"main/internal/middlewares"
+	"main/internal/routers"
 	"net/http"
 )
 
@@ -25,10 +27,10 @@ func (s *Server) Serve() error {
 		w.Write([]byte("Server online"))
 	})
 
-	itemsRouter := NewItemsRouter(mux, s.db)
+	itemsRouter := routers.NewItemsRouter(mux, s.db)
 	itemsRouter.InitRoutes()
 
-	loggedMux := NewLogger(mux)
+	loggedMux := middlewares.NewLogger(mux)
 
 	server := http.Server{
 		Addr:    s.port,
