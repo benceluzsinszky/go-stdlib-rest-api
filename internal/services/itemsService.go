@@ -6,11 +6,11 @@ import (
 	"time"
 )
 
+type Item = types.Item
+
 type ItemService struct {
 	db *sql.DB
 }
-
-type Item = types.Item
 
 func NewItemService(db *sql.DB) *ItemService {
 	return &ItemService{db: db}

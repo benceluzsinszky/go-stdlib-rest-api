@@ -14,12 +14,12 @@ import (
 	"github.com/lib/pq"
 )
 
+type Item = types.Item
+
 type ItemsRouter struct {
 	mux *http.ServeMux
 	s   *services.ItemService
 }
-
-type Item = types.Item
 
 func NewItemsRouter(mux *http.ServeMux, db *sql.DB) *ItemsRouter {
 	s := services.NewItemService(db)

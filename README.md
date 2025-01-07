@@ -1,6 +1,6 @@
 # REST API example with Go using the Standard Library
 
-This is a simple REST API example built with Go using the standard library. It demonstrates how to create a basic server, handle routes, query a postgres db,  and respond to HTTP requests.
+This is a simple REST API example built with Go using the standard library. It demonstrates how to create a basic server, handle routes, query a postgres db, and respond to HTTP requests.
 
 The only external dependency is the PostgreSQL driver for Go from <https://github.com/lib/pq>.
 
@@ -26,7 +26,7 @@ To run the server, use the following command:
 
 ```bash
 
-go run . [PORT]
+go run .\cmd\main.go [PORT]
 ```
 
 The default port is 8080 if not specified.
@@ -34,7 +34,7 @@ The default port is 8080 if not specified.
 ## Endpoints
 
 | Method   | Endpoint      | Parameters | Description                  |
-|----------|---------------|------------|------------------------------|
+| -------- | ------------- | ---------- | ---------------------------- |
 | `POST`   | `/items`      | `name`     | Create a new item            |
 | `GET`    | `/items`      |            | List all items               |
 | `GET`    | `/items/{id}` |            | Get a specific item by ID    |
